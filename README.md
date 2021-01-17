@@ -1,7 +1,7 @@
 VVVVVV auto splitter for Linux (V6as4L)
 =======================================
 
-This is a first attempt at an auto splitter for the game VVVVVV specifically for Linux. Right now, it only shows the time and the splits on the console. 
+This is a first attempt at an auto splitter for the game VVVVVV specifically for Linux. Right now, all output is on the console. And a lot of quality of life features are missing, like compare to earlier splits or even saving splits. But this uses the correct ingame time.
 
 ## Installation
 
@@ -24,7 +24,7 @@ v6as4l ~/.local/share/Steam/steamapps/common/vvvvvv/x86_64/vvvvvv.x86_64
  - [X] Read all the relevant information from the game's memory
  - [X] Trigger splits for my Glitchless 100% route
  - [X] Have a rudimentary output of the splits
- - [ ] Actually track, save and compare times
+ - [ ] Actually save and compare times
  - [ ] Have a nice GUI
  - [ ] Support other routes
  - [ ] Support other games
