@@ -24,6 +24,7 @@ v6as4l ~/.local/share/Steam/steamapps/common/vvvvvv/x86_64/vvvvvv.x86_64
  - [X] Read all the relevant information from the game's memory
  - [X] Trigger splits for my Glitchless 100% route
  - [X] Have a rudimentary output of the splits
+ - [X] Support for subsplits (and subsubsplits, and subsubsubssplits and so on)
  - [ ] Actually save and compare times
  - [ ] Have a nice GUI
  - [ ] Support other routes
