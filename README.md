@@ -8,7 +8,7 @@ This is a first attempt at an auto splitter for the game VVVVVV specifically for
 The program can be installed via pip
 
 ```
-pip install --user https://github.com/christofsteel/v6as4l.git
+pip install --user git+https://github.com/christofsteel/v6as4l.git
 ```
 
 ## Usage
