@@ -29,6 +29,10 @@ v6as4l ~/.local/share/Steam/steamapps/common/vvvvvv/x86_64/vvvvvv.x86_64
  - [ ] Support other routes
  - [ ] Support other games
 
+## Screenshot
+
+![Screenshot](v6as4l.png)
+
 ## How does it work?
 
 To implement an auto splitter for VVVVVV on Linux we are facing basically two problems: VVVVVV and Linux. On Linux it is generally not possible to access the memory of a process in another process, unless that process runs with root privileges, or is the parent of the other process. Since it is a bad idea to run a "some guys speedrunning program" with root privileges, we opt for the second option. This means that the auto splitter needs to launch the game executable. Reading and writeing to memory is done using the `ptrace` syscall.
