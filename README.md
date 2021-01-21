@@ -94,7 +94,7 @@ This triggers if the variables `trinkets` changes.
 A route file defines the route for your speedrun. It is also a json file with the following fields:
 
  * `name`, the name of your attemtet category
- * `gamefile`, the location of the respecive json file for the game
+ * `gamefile`, the location of the respective json file for the game
  * `start`, the event to start the timer
  * `reset`, the event to reset the timer
  * `route`, this defines the triggers for the actual route (see below)
