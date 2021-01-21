@@ -1,48 +1,112 @@
-VVVVVV auto splitter for Linux (V6as4L)
-=======================================
+pyautosplit
+===========
 
-This is a first attempt at an auto splitter for the game VVVVVV specifically for Linux. Right now, it only shows the time and the splits on the console. 
+This is a python based autosplitting tool for speedrunning. Currently only Linux is supported, but adding Windows support should be possible, when I come around to do it. In theory MacOS and other Unix systems work, but this is completely untested.
+
+## Why was this done?
+
+While LiveSplit does work inside wine, the autosplit component does not work on linux machines. In addition to this, it is not possible to create breakpoints and read values in CPU registers with the autosplit component of LiveSplit. PyAutoSplit can do that. This is especially useful in a game like VVVVVV, where all relevant information are on the stack, and therefore at nonstatic locations in memory. 
+
+Current strategies involv scanning the processes memory for specific values, to guess the location of information like gamestate etc. Unfortunately this is rather error prone. With PyAutoSplit one can set a breakpoint at the (static) instruction where the game object is created, and read the cpu registers to get an exact location of the game object.
 
 ## Installation
 
 The program can be installed via pip
 
 ```
-pip install --user git+https://github.com/christofsteel/v6as4l.git
+pip install --user git+https://github.com/christofsteel/pyautosplit.git
 ```
 
 ## Usage
 
-Once installed you can run it with `v6as4l path/to/vvvvvv.x86_64`. In my case that would be
+First you should start LiveSplit, and start the LiveSplit server component. After that you can launch PyAutoSplit with
 
 ```
-v6as4l ~/.local/share/Steam/steamapps/common/vvvvvv/x86_64/vvvvvv.x86_64
+pyautosplit routefile.json
 ```
 
-## Todos:
+## Configuration
 
- - [X] Read all the relevant information from the game's memory
- - [X] Trigger splits for my Glitchless 100% route
- - [X] Have a rudimentary output of the splits
- - [ ] Actually track, save and compare times
- - [ ] Have a nice GUI
- - [ ] Support other routes
- - [ ] Support other games
+To use PyAutoSplit for a game, you have to have it installed and two files. One specific for the game you are playing and one specific for your route. In this repository, there is an example for the game VVVVVV and a route for glitchless 100%.
 
-## Screenshot
+### Game file
 
-![Screenshot](v6as4l.png)
+A game file is a json file with the following fields:
 
-## How does it work?
+  * `name`, the name of the game
+  * `command`, the launch command to run the game
+  * `cwd`, the working directory of the command (optional)
+  * `frequency`, how many times a second should the memory be read
+  * `time`, how does one calculate the ingame time in seconds (optional). If not present, realtime will be used.
+  * `variables`, variables, that can be used to define other components (see below)
+  * `events`, events, that can trigger splits, resets etc. (see also below)
 
-To implement an auto splitter for VVVVVV on Linux we are facing basically two problems: VVVVVV and Linux. On Linux it is generally not possible to access the memory of a process in another process, unless that process runs with root privileges, or is the parent of the other process. Since it is a bad idea to run a "some guys speedrunning program" with root privileges, we opt for the second option. This means that the auto splitter needs to launch the game executable. Reading and writeing to memory is done using the `ptrace` syscall.
 
-The other problem is VVVVVV itself. In version 2.2 the game object, that holds the global state of the game, is created in the stack in the `main` function of the game (This is no longer the case in the currently unreleased version 2.3 of the game). This has the unfortunate side effect that we cannot deterministic infer the location of the object in memory. To address this problem, we utilize a method, that is usually used in debugging tools, like `gdm` or `lldb`; we insert a breakpoint in the game.
+#### Variables
 
-When a progam is run on linux (and to my knowlege in any operating system), its code is copied into the system's memory. Once there a process with enough privileges -- like a root process or a parent process -- can attatch itself to it (usually as some sort of debugger) and not only read the memory, but also write to it. To insert a breakpoint into a program, we overwrite the instruction at the address we want to break with the instruction `int3` (Or `0xcc` in x86 machine code). Once the program executes this the cpu issues a trap, and control goes to the debugging process. In our case the debugging process would be `v6as4l`. We set a breakpoint at the address `0x416da8`, which corresponds to line 99 in `main.cpp` in the games source code.
+A variable in the `variables` field can be either a the state of the stack pointer at a specific instruction (`rsp`), the state of the base pointer at a specific instruction (`rbp`) or an integer value at an address in memory (`memory`). Addresses of variables can use the values of variables, that were defined prior, and the stack and base pointer can define an offset to be added to the value.
 
-This is the location in code, where the game object is created: `main.cpp:99| Game game;`. When we look at the corresponding assembler code at that address, it reads `lea 0xe20(%rsp),%rdi`. Without going into to much detail, it says that the game object starts with an offset of `0xe20` to the current stack pointer (`rsp`).
+```
+"game_object": {
+    "type": "rsp",
+    "address": "0x416da8",
+    "offset": "0xe20"
+}
+```
 
-Since we know that this offset is static, we only need to get the stack pointer at the time, and calculate the address in memory. Luckily we set a breakpoint at that exact location, so when the game reaches that point, control goes to our auto splitter and we can just read the current stack pointer (The stack pointer for the game, not for the auto splitter). Now we have access to the game object. All attributes of the game object, like the current gamestate, the amount of trinkets, the current time, all have a static offset to the beginning of the game object, so we can read them as well.
+This defines the variable `game_object` to be the value of the stack pointer at instruction `0x416da8` incremented by `0xe20`.
 
-Now all that is left to do, is periodically read the data at the memory locations and infer whether a trinket has been found or a level has been completed.
+```
+"frames": {
+    "type": "memory",
+    "address": "game_object + 0xa8"
+}
+```
+
+This defines the variable `frames` to be the value in memory at address `game_object + 0xa8`. The variable `game_object` must be defined prior.
+
+#### Events
+
+An event in the `events` field is a json object with the fields `name` and `trigger`, bound to an identifier.
+
+```
+"gamestart": {
+    "name": "Game Start",
+    "trigger": "state.gamestate == 0"
+}
+```
+
+This defines the event `gamestart` with the name `Game Start` to be triggered, if the variable `gamestart` is equal to `0` at the current state.
+
+Events can access variables of the current state by prefixing them with `state.`. They also can access variables of the state juste before the current state by prefixing them with `oldstate.`. This is useful to track changes in the state.
+
+```
+"secret_to_nobody": {
+    "name": "Trinket - It's a Secret to Nobody",
+    "trigger": "state.trinkets != oldstate.trinkets"
+}
+```
+
+This triggers if the variables `trinkets` changes.
+
+### Route file
+
+A route file defines the route for your speedrun. It is also a json file with the following fields:
+
+ * `name`, the name of your attemtet category
+ * `gamefile`, the location of the respecive json file for the game
+ * `start`, the event to start the timer
+ * `reset`, the event to reset the timer
+ * `route`, this defines the triggers for the actual route (see below)
+
+The field `route` containes the splits. Each split is itself a json object, that can contain subsplits.
+
+```
+'first_level': {},
+'second_level': {
+  'mid_boss' : {}
+}
+```
+In this example the first split is triggered when the event `first_level` happens. The next split would be the first subsplit of `mid_boss`, the next split would be `second_level`.
+
+The names of the splits reference events as defined in the game file.

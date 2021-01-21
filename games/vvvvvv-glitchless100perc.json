@@ -1,0 +1,42 @@
+{
+    "name": "Glichless 100%",
+    "gamefile": "vvvvvv.json",
+    "start" : "gamestart",
+    "reset" : "menu",
+    "route": {
+        "spacestation1": {
+            "secret_to_nobody": {},
+            "trench_warfare": {}
+        },
+        "laboratory": {
+            "worth_the_challenge": {},
+            "lab_maze": {},
+            "tantalizing_trinket": {},
+            "purest_unobtainium": {}
+        },
+        "spacestation2": {
+            "victoria_vitellary": {},
+            "elephant": {},
+            "one_way_room": {},
+            "keep_coming_back": {},
+            "clarion_call": {},
+            "dtthw": {},
+            "prize_for_the_reckless": {}
+        },
+        "intermission1": {},
+        "warpzone": {
+            "cave_1": {},
+            "cave_1": {},
+            "cave_3": {},
+            "edge_games": {}
+        },
+        "intermission2": {},
+        "tower": {
+            "tower_1": {},
+            "tower_2": {}
+        },
+        "gamecomplete": {
+            "v": {}
+        }
+    }
+}

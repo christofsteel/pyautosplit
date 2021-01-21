@@ -1,16 +1,16 @@
 import setuptools
 
 setuptools.setup(
-    name="v6as4l",
-    version="0.0.1",
+    name="pyautosplit",
+    version="0.8.0",
     author="Christoph Stahl",
     author_email="christoph.stahl@tu-dortmund.de",
-    description="A very rudimentary implementation of an auto splitter for the game VVVVVV for linux",
-    url="https://github.com/christofsteel/v6as4l.git",
+    description="A python autosplit module for linux and the livesplit server module",
+    url="https://github.com/christofsteel/pyautosplit.git",
     packages=setuptools.find_packages(),
-    install_requires=["python-ptrace"],
+    install_requires=["python-ptrace", "simpleeval"],
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 4 - Beta",
         "Programming Language :: Python :: 3",
         "Environment :: Console",
         "License :: OSI Approved :: Apache Software License",
@@ -20,6 +20,6 @@ setuptools.setup(
     ],
     python_requires='>=3.7',
     entry_points = {
-        'console_scripts': ['v6as4l=v6as4l.main:main']
+        'console_scripts': ['pyautosplit=pyautosplit.main:main']
     }
 )

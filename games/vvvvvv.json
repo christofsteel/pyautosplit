@@ -1,0 +1,164 @@
+{
+    "name": "VVVVVV",
+    "command": "~/.local/share/Steam/steamapps/common/vvvvvv/x86_64/vvvvvv.x86_64",
+    "cwd": "~/.local/share/Steam/steamapps/common/vvvvvv/",
+    "frequency": "30",
+    "time": "(hours * 60 + minutes) * 60 + seconds + frames/30",
+    "variables": {
+        "game_object": {
+            "type": "rsp",
+            "address": "0x416da8",
+            "offset": "0xe20"
+        },
+        "frames": {
+            "type": "memory",
+            "address": "game_object + 0xa8"
+        },
+        "seconds": {
+            "type": "memory",
+            "address": "game_object + 0xac"
+        },
+        "minutes": {
+            "type": "memory",
+            "address": "game_object + 0xb0"
+        },
+        "hours": {
+            "type": "memory",
+            "address": "game_object + 0xb4"
+        },
+        "trinkets": {
+            "type": "memory",
+            "address": "game_object + 0x3d0"
+        },
+        "state": {
+            "type": "memory",
+            "address": "game_object + 0x60"
+        },
+        "gamestate": {
+            "type": "memory",
+            "address": "game_object + 0x70"
+        }
+    },
+    "events": {
+        "gamestart": {
+            "name": "Game Start",
+            "trigger": "state.gamestate == 0"
+        },
+        "menu": {
+            "name": "Menu",
+            "trigger": "state.gamestate == 1"
+        },
+        "spacestation1": {
+            "name": "Space Station 1",
+            "trigger": "state.state == 3051"
+        },
+        "laboratory": {
+            "name": "Laboratory",
+            "trigger": "state.state == 3040"
+        },
+        "spacestation2": {
+            "name": "Space Station 2",
+            "trigger": "state.state == 3020"
+        },
+        "intermission1": {
+            "name": "Intermission 1",
+            "trigger": "state.state == 3085"
+        },
+        "warpzone": {
+            "name": "Warp Zone",
+            "trigger": "state.state == 3006"
+        },
+        "intermission2": {
+            "name": "Intermission 2",
+            "trigger": "state.state == 3080"
+        },
+        "tower": {
+            "name": "Tower",
+            "trigger": "state.state == 3060"
+        },
+        "gamecomplete": {
+            "name": "Game Complete",
+            "trigger": "state.state == 3503"
+        },
+        "secret_to_nobody": {
+            "name": "Trinket - It's a Secret to Nobody",
+            "trigger": "state.trinkets != oldstate.trinkets"
+        },
+        "trench_warfare": {
+            "name": "Trinket - Trench Warfare",
+            "trigger": "state.trinkets != oldstate.trinkets"
+        },
+        "worth_the_challenge": {
+            "name": "Trinket - Young Man, It's Worth the Challenge",
+            "trigger": "state.trinkets != oldstate.trinkets"
+        },
+        "lab_maze": {
+            "name": "Trinket - Lab Maze",
+            "trigger": "state.trinkets != oldstate.trinkets"
+        },
+        "tantalizing_trinket": {
+            "name": "Trinket - The Tantalizing Trinket",
+            "trigger": "state.trinkets != oldstate.trinkets"
+        },
+        "purest_unobtainium": {
+            "name": "Trinket - Purest Unobtainium",
+            "trigger": "state.trinkets != oldstate.trinkets"
+        },
+        "victoria_vitellary": {
+            "name": "Trinket - Victoria/Vitellary",
+            "trigger": "state.trinkets != oldstate.trinkets"
+        },
+        "elephant": {
+            "name": "Trinket - Elephant",
+            "trigger": "state.trinkets != oldstate.trinkets"
+        },
+        "one_way_room": {
+            "name": "Trinket - One Way Room",
+            "trigger": "state.trinkets != oldstate.trinkets"
+        },
+        "keep_coming_back": {
+            "name": "Trinket - You Just Keep Coming Back",
+            "trigger": "state.trinkets != oldstate.trinkets"
+        },
+        "clarion_call": {
+            "name": "Trinket - Clarion Call",
+            "trigger": "state.trinkets != oldstate.trinkets"
+        },
+        "dtthw": {
+            "name": "Trinket - Doing Things the Hard Way",
+            "trigger": "state.trinkets != oldstate.trinkets"
+        },
+        "prize_for_the_reckless": {
+            "name": "Trinket - Prize for the Reckless",
+            "trigger": "state.trinkets != oldstate.trinkets"
+        },
+        "cave_1": {
+            "name": "Trinket - Cave 1",
+            "trigger": "state.trinkets != oldstate.trinkets"
+        },
+        "cave_2": {
+            "name": "Trinket - Cave 2",
+            "trigger": "state.trinkets != oldstate.trinkets"
+        },
+        "cave_3": {
+            "name": "Trinket - Cave 3",
+            "trigger": "state.trinkets != oldstate.trinkets"
+        },
+        "edge_games": {
+            "name": "Trinket - Edge Games",
+            "trigger": "state.trinkets != oldstate.trinkets"
+        },
+        "tower_1": {
+            "name": "Trinket - Tower 1",
+            "trigger": "state.trinkets != oldstate.trinkets"
+        },
+        "tower_2": {
+            "name": "Trinket - Tower 2",
+            "trigger": "state.trinkets != oldstate.trinkets"
+        },
+        "v": {
+            "name": "Trinket - V",
+            "trigger": "state.trinkets != oldstate.trinkets"
+        }
+    }
+}
