@@ -76,7 +76,7 @@ An event in the `events` field is a json object with the fields `name` and `trig
 }
 ```
 
-This defines the event `gamestart` with the name `Game Start` to be triggered, if the variable `gamestart` is equal to `0` at the current state.
+This defines the event `gamestart` with the name `Game Start` to be triggered, if the variable `gamestate` is equal to `0` at the current state.
 
 Events can access variables of the current state by prefixing them with `state.`. They also can access variables of the state juste before the current state by prefixing them with `oldstate.`. This is useful to track changes in the state.
 
