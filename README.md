@@ -1,5 +1,5 @@
-VVVVVV auto splitter for Linux (V6as4L)
-=======================================
+PyAutoSplit
+===========
 
 This is a python based autosplitting tool for speedrunning. Currently only Linux is supported, but adding Windows support should be possible, when I come around to do it. In theory MacOS and other Unix systems work, but this is completely untested.
 
