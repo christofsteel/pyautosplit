@@ -3,6 +3,7 @@ import shlex
 from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Any
+from copy import deepcopy
 
 from simpleeval import simple_eval
 
@@ -50,7 +51,7 @@ class Game:
         self.callback_handlers = callback_handlers
 
         for cbh in self.callback_handlers:
-            cbh.init(route, (self.data.get("time")))
+            cbh.init(deepcopy(route), (self.data.get("time")))
 
         if "cwd" in self.data:
             cwd = Path(self.data["cwd"]).expanduser()
@@ -102,7 +103,7 @@ class Game:
                 return None
 
         for name, var in self.data["variables"].items():
-            if var["type"] == "rsp":
+            if var["type"] == "rsp" or var["type"] == "rbp":
                 continue
             addr = get_address(name)
             try:
