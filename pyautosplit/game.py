@@ -28,7 +28,7 @@ class Route:
     def entry_to_split(self, splits_dict):
         splits = []
         for key, attr in splits_dict.items():
-            split = self.events[key]
+            split = deepcopy(self.events[key])
             split.subsplits = self.entry_to_split(attr)
             splits.append(split)
         return splits
