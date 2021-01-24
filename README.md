@@ -107,6 +107,6 @@ The field `route` containes the splits. Each split is itself a json object, that
   'mid_boss' : {}
 }
 ```
-In this example the first split is triggered when the event `first_level` happens. The next split would be the first subsplit of `mid_boss`, the next split would be `second_level`.
+In this example the first split is triggered when the event `first_level` happens. The next split would be the first subsplit of `second_level`, namely `mid_boss`, the next split would be `second_level` itself.
 
 The names of the splits reference events as defined in the game file.
