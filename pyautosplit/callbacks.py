@@ -86,7 +86,10 @@ class CallbackHandler():
         else:
             nextsplits = self.nextsplit()
 
-            if nextsplits == [] or self.checkevent(self.route.resettrigger):
+            if nextsplits == []:
+                for split in self.route.splits:
+                    self.resetsplit(split)
+            elif self.checkevent(self.route.resettrigger):
                 for split in self.route.splits:
                     self.resetsplit(split)
                 self.reset()
