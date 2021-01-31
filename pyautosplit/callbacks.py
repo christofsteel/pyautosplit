@@ -20,7 +20,7 @@ class CallbackHandler():
         self.real_time = 0
 
     def time_in_seconds(self):
-        if self.timing is None:
+        if self.timing is None or self.timing == "":
             return time.time() - self.real_time
         try:
             return simple_eval(self.timing, names=self.state)
@@ -111,7 +111,7 @@ class ConsoleOut(CallbackHandler):
 
     def update_time(self):
         print(
-            f"\r{datetime.timedelta(seconds=self.time_in_seconds())} - {self.nextsplit_as_string()}",
+            f"\r{datetime.timedelta(seconds=self.time_in_seconds())} - {self.nextsplit_as_string()}, {self.state}",
             end='')
 
     def split(self, split):
@@ -133,7 +133,7 @@ class LiveSplitServer(CallbackHandler):
 
     def init(self, *args, **kwargs):
         super().init(*args, **kwargs)
-        if self.timing is not None:
+        if self.timing is not None and self.timing != "":
             self.socket.send(b"initgametime\r\n")
 
     def reset(self):
@@ -144,7 +144,7 @@ class LiveSplitServer(CallbackHandler):
         self.socket.send(b"starttimer\r\n")
 
     def update_time(self):
-        if self.timing is not None:
+        if self.timing is not None and self.timing != "":
             self.socket.send(
                 f"setgametime {self.time_in_seconds()}\r\n".encode())
 

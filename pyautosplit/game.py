@@ -46,6 +46,10 @@ class Game:
     def __init__(self, gamedata, rundata, callback_handlers):
         self.data = gamedata
 
+        if 'overwrites' in rundata:
+            for k, v in rundata['overwrites'].items():
+                self.data[k] = v
+
         events = {name: Split(**s) for name, s in self.data["events"].items()}
         route = Route(rundata, events)
         self.callback_handlers = callback_handlers
@@ -107,7 +111,10 @@ class Game:
                 continue
             addr = get_address(name)
             try:
-                self.state[name] = self.process.read_int(addr)
+                if "var_type" in var and var["var_type"] == "bool":
+                    self.state[name] = self.process.read_bool(addr)
+                else:
+                    self.state[name] = self.process.read_int(addr)
             except TypeError:
                 pass
 

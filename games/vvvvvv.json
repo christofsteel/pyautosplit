@@ -37,9 +37,27 @@
         "gamestate": {
             "type": "memory",
             "address": "game_object + 0x70"
+        },
+        "entity_objects": {
+            "type": "memory",
+            "address": "game_object - 0xc00"
+        },
+        "near_elephant": {
+            "type": "memory",
+            "var_type": "bool",
+            "address": "game_object - 0xc00 + 0x126"
+        },
+        "sad": {
+            "type": "memory",
+            "var_type": "bool",
+            "address": "game_object - 0xc00 + 0x127"
         }
     },
     "events": {
+        "elephant_sad" : {
+            "name": "Elephant Sad",
+            "trigger": "state.near_elephant and state.sad"
+        },
         "gamestart": {
             "name": "Game Start",
             "trigger": "state.gamestate == 0"
