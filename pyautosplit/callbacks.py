@@ -3,6 +3,7 @@ import time
 import socket
 from copy import deepcopy
 
+import pyautogui
 from simpleeval import simple_eval
 
 
@@ -150,3 +151,13 @@ class LiveSplitServer(CallbackHandler):
 
     def split(self, split):
         self.socket.send(b"split\r\n")
+
+class KeyBoardPress(CallbackHandler):
+    def reset(self):
+        pyautogui.press("backspace")
+
+    def start(self):
+        pyautogui.press("space")
+
+    def split(self, split):
+        pyautogui.press("space")

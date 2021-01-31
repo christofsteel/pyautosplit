@@ -4,13 +4,14 @@ from argparse import ArgumentParser
 from collections import OrderedDict
 
 from .game import Game
-from .callbacks import ConsoleOut, LiveSplitServer
+from .callbacks import ConsoleOut, LiveSplitServer, KeyBoardPress
 
 
 def main():
     parser = ArgumentParser()
     parser.add_argument("--no-livesplit", "-L", action="store_true")
     parser.add_argument("--console-out", "-c", action="store_true")
+    parser.add_argument("--keyboard-out", "-k", action="store_true")
     parser.add_argument("--livesplit-port", "-p", type=int, default=16834)
     parser.add_argument("--livesplit-host", "-H", default="localhost")
     parser.add_argument("runfile")
@@ -39,6 +40,9 @@ def main():
 
     if args.console_out:
         callback_handlers.append(ConsoleOut())
+
+    if args.keyboard_out:
+        callback_handlers.append(KeyBoardPress())
 
     game = Game(gamedata, rundata, callback_handlers)
     game.hook()
