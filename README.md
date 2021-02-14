@@ -5,7 +5,7 @@ This is a python based autosplitting tool for speedrunning. Currently only Linux
 
 ## Why was this done?
 
-While LiveSplit does work inside wine, the autosplit component does not work on linux machines. In addition to this, it is not possible to create breakpoints and read values in CPU registers with the autosplit component of LiveSplit. PyAutoSplit can do that. This is especially useful in a game like VVVVVV, where all relevant information are on the stack, and therefore at nonstatic locations in memory. 
+While LiveSplit does work inside wine, the autosplit component does not work on linux machines. In addition to this, it is not possible to create breakpoints and read values in CPU registers with the autosplit component of LiveSplit. PyAutoSplit can do that. This is especially useful in a game like VVVVVV (2.2 and below), where all relevant information are on the stack, and therefore at nonstatic locations in memory. 
 
 Current strategies involve scanning the processes memory for specific values, to guess the location of information like gamestate etc. Unfortunately this is rather error prone. With PyAutoSplit one can set a breakpoint at the (static) instruction where the game object is created, and read the cpu registers to get an exact location of the game object.
 
