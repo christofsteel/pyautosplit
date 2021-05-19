@@ -36,8 +36,10 @@ class Route:
     def __init__(self, rundata, events):
         self.events = events
         self.splits = self.entry_to_split(rundata["route"])
-        self.resettrigger = self.events[rundata["reset"]]
+        self.resettrigger = self.events[rundata["reset"]] if "reset" in rundata else None
         self.starttigger = self.events[rundata["start"]]
+        self.pausetriggers = [self.events[pause] for pause in rundata["pause"]] if "pause" in rundata else []
+        self.resumetriggers = [self.events[resume] for resume in rundata["resume"]] if "resume" in rundata else []
         self.name = rundata["name"]
         self.gamefile = rundata["gamefile"]
 

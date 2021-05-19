@@ -19,10 +19,15 @@ class CallbackHandler():
         self.old_state = None
         self.timing = None
         self.real_time = 0
+        self.pause_time = 0
+        self.pause_diff = 0
+        self.is_pause = False
 
     def time_in_seconds(self):
         if self.timing is None or self.timing == "":
-            return time.time() - self.real_time
+            if self.is_pause:
+                return self.pause_time - self.real_time
+            return (time.time() - self.pause_diff) - self.real_time
         try:
             return simple_eval(self.timing, names=self.state)
         except TypeError:
@@ -55,11 +60,27 @@ class CallbackHandler():
         pass
 
     def checkevent(self, event):
-        return simple_eval(
+        return event is not None and simple_eval(
             event.trigger,
             names={
                 "state": self.state,
                 "oldstate": self.old_state})
+
+    def _pause(self):
+        self.pause_time = time.time()
+        self.is_pause = True
+        self.pause()
+
+    def pause(self):
+        pass
+
+    def _resume(self):
+        self.pause_diff += time.time() - self.pause_time
+        self.is_pause = False
+        self.resume()
+
+    def resume(self):
+        pass
 
     def start(self):
         pass
@@ -90,6 +111,10 @@ class CallbackHandler():
             if nextsplits == []:
                 for split in self.route.splits:
                     self.resetsplit(split)
+            elif not self.is_pause and any([self.checkevent(pause) for pause in self.route.pausetriggers]):
+                self._pause()
+            elif self.is_pause and any([self.checkevent(resume) for resume in self.route.resumetriggers]):
+                self._resume()
             elif self.checkevent(self.route.resettrigger):
                 for split in self.route.splits:
                     self.resetsplit(split)
@@ -118,6 +143,14 @@ class ConsoleOut(CallbackHandler):
     def split(self, split):
         print()
 
+    def pause(self):
+        super().pause()
+        print("PAUSE")
+
+    def resume(self):
+        super().resume()
+        print("RESUME")
+
     def reset(self):
         print("RESET")
 
@@ -144,9 +177,14 @@ class LiveSplitServer(CallbackHandler):
         super().start()
         self.socket.send(b"starttimer\r\n")
 
+    def pause(self):
+        self.socket.send(b"pause\r\n")
+
+    def resume(self):
+        self.socket.send(b"resume\r\n")
+
     def update_time(self):
-        if self.timing is not None and self.timing != "":
-            self.socket.send(
+        self.socket.send(
                 f"setgametime {self.time_in_seconds()}\r\n".encode())
 
     def split(self, split):
@@ -161,3 +199,9 @@ class KeyBoardPress(CallbackHandler):
 
     def split(self, split):
         pyautogui.press("space")
+
+    def pause(self):
+        print("unfortunately urn does not have a pause function")
+
+    def resume(self):
+        print("unfortunately urn does not have a resume function")

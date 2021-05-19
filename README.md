@@ -35,12 +35,13 @@ A game file is a json file with the following fields:
 
   * `name`, the name of the game
   * `command`, the launch command to run the game
-  * `cwd`, the working directory of the command (optional)
+  * `cwd`, the working directory of the command*
   * `frequency`, how many times a second should the memory be read
-  * `time`, how does one calculate the ingame time in seconds (optional). If not present, realtime will be used.
+  * `time`, how does one calculate the ingame time in seconds. If not present, realtime will be used.*
   * `variables`, variables, that can be used to define other components (see below)
   * `events`, events, that can trigger splits, resets etc. (see also below)
 
+(Fields marked with an asterisk are optional)
 
 #### Variables
 
@@ -95,9 +96,14 @@ A route file defines the route for your speedrun. It is also a json file with th
 
  * `name`, the name of your attemtet category
  * `gamefile`, the location of the respective json file for the game
+ * `overwrites`, a list of overwrites corresponding the the game file *
  * `start`, the event to start the timer
- * `reset`, the event to reset the timer
+ * `reset`, the event to reset the timer*
+ * `pause`, a list of events to pause the timer*
+ * `resume`, a list of events to resume the timer*
  * `route`, this defines the triggers for the actual route (see below)
+
+(Fields marked with an asterisk are optional)
 
 The field `route` containes the splits. Each split is itself a json object, that can contain subsplits.
 
