@@ -1,0 +1,22 @@
+{
+    "name": "Glichless 100%",
+    "gamefile": "vvvvvv.json",
+    "start" : "gamestart",
+    "reset" : "menu",
+    "route": {
+        "spacestation1": {
+        },
+        "spacestation2": {
+        },
+        "tower": {
+        },
+        "intermission1": {},
+        "warpzone": {
+        },
+        "intermission2": {},
+        "laboratory": {
+        },
+        "gamecomplete": {
+        }
+    }
+}

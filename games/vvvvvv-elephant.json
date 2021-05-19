@@ -1,0 +1,13 @@
+{
+    "name": "Glichless Elephant Sad%",
+    "overwrites": {
+        "time": ""
+    },
+    "gamefile": "vvvvvv.json",
+    "start" : "gamestart",
+    "reset" : "menu",
+    "route": {
+        "spacestation1": {},
+        "elephant_sad": {}
+    }
+}

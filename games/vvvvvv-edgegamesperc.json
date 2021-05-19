@@ -1,0 +1,13 @@
+{
+    "name": "Glichless 100%",
+    "gamefile": "vvvvvv.json",
+    "start" : "gamestart",
+    "reset" : "menu",
+    "route": {
+        "spacestation1": {
+        },
+        "warpzone": {
+            "edge_games": {}
+        }
+    }
+}

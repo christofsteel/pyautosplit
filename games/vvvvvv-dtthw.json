@@ -1,0 +1,13 @@
+{
+    "name": "Glichless DTTHW%",
+    "overwrites": {
+        "time": ""
+    },
+    "gamefile": "vvvvvv.json",
+    "start" : "gamestart",
+    "reset" : "menu",
+    "route": {
+        "spacestation1": {},
+        "dtthw": {}
+    }
+}
