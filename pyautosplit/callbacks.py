@@ -125,7 +125,6 @@ class ConsoleOut(CallbackHandler):
 
 
 class LiveSplitServer(CallbackHandler):
-
     def __init__(self, host="localhost", port=16834):
         super().__init__()
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -150,3 +149,59 @@ class LiveSplitServer(CallbackHandler):
 
     def split(self, split):
         self.socket.send(b"split\r\n")
+
+
+class LiveSplitOne(CallbackHandler):
+    def __init__(self, port=5000):
+        super().__init__()
+        self.port = port
+
+        from threading import Thread
+        from flask import Flask
+        from flask_sockets import Sockets
+        from gevent import pywsgi
+        from geventwebsocket.handler import WebSocketHandler
+        from gevent import monkey
+        monkey.patch_all()
+
+        self.app = Flask(__name__)
+        self.app.config['SECRET_KEY'] = 'secret!'
+        self.sockets = Sockets(self.app)
+        self.ws_list = []
+
+        @self.sockets.route('/')
+        def echo_socket(ws):
+            self.ws_list.append(ws)
+            while not ws.closed:
+                message = ws.receive()
+                ws.send(message)
+
+        self.server = pywsgi.WSGIServer(
+            ('', port), self.app, handler_class=WebSocketHandler)
+
+        self.thread = Thread(target=self._start_server, daemon=True)
+        self.thread.start()
+
+    def init(self, *args, **kwargs):
+        super().init(*args, **kwargs)
+
+    def reset(self):
+        self._send_command("reset")
+
+    def start(self):
+        super().start()
+        self._send_command("start")
+
+    def split(self, split):
+        self._send_command("split")
+
+    def _send_command(self, name):
+        for ws in self.ws_list:
+            if not ws.closed:
+                ws.send(name)
+            else:
+                self.ws_list.remove(ws)
+
+    def _start_server(self):
+        print(f"Connect LiveSplitOne to ws://localhost:{self.port}")
+        self.server.start()

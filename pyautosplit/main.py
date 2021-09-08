@@ -4,12 +4,13 @@ from argparse import ArgumentParser
 from collections import OrderedDict
 
 from .game import Game
-from .callbacks import ConsoleOut, LiveSplitServer
+from .callbacks import ConsoleOut, LiveSplitServer, LiveSplitOne
 
 
 def main():
     parser = ArgumentParser()
     parser.add_argument("--no-livesplit", "-L", action="store_true")
+    parser.add_argument("--livesplitone", "-O", action="store_true")
     parser.add_argument("--console-out", "-c", action="store_true")
     parser.add_argument("--livesplit-port", "-p", type=int, default=16834)
     parser.add_argument("--livesplit-host", "-H", default="localhost")
@@ -32,10 +33,14 @@ def main():
     callback_handlers = []
 
     if not args.no_livesplit:
-        callback_handlers.append(
-            LiveSplitServer(
-                args.livesplit_host,
-                args.livesplit_port))
+        if args.livesplitone:
+            callback_handlers.append(
+                LiveSplitOne(args.livesplit_port))
+        else:
+            callback_handlers.append(
+                LiveSplitServer(
+                    args.livesplit_host,
+                    args.livesplit_port))
 
     if args.console_out:
         callback_handlers.append(ConsoleOut())
