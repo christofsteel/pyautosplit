@@ -36,8 +36,8 @@ class GameProcess:
     def cont(self):
         self.dprocess.cont()
 
-    def read_int(self, addr):
-        return int.from_bytes(self.dprocess.readBytes(addr, 4), 'little')
+    def read_int(self, addr, length=4):
+        return int.from_bytes(self.dprocess.readBytes(addr, length), 'little')
 
     def read_bool(self, addr):
         return self.dprocess.readBytes(addr, 1) == b'\01'

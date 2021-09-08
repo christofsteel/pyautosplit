@@ -114,7 +114,11 @@ class Game:
                 if "var_type" in var and var["var_type"] == "bool":
                     self.state[name] = self.process.read_bool(addr)
                 else:
-                    self.state[name] = self.process.read_int(addr)
+                    if "length" in var:
+                        self.state[name] = self.process.read_int(
+                            addr, var["length"])
+                    else:
+                        self.state[name] = self.process.read_int(addr)
             except TypeError:
                 pass
 
