@@ -1,3 +1,4 @@
+import time
 import subprocess
 from signal import SIGTRAP
 
@@ -9,6 +10,8 @@ class GameProcess:
         self.process = subprocess.Popen(command,
                                         stdout=subprocess.DEVNULL,
                                         cwd=cwd)
+
+        time.sleep(1)
 
         self.debugger = ptrace.debugger.PtraceDebugger()
         self.dprocess = self.debugger.addProcess(self.process.pid, False)
