@@ -5,7 +5,7 @@ This is a python based autosplitting tool for speedrunning. Currently only Linux
 
 ## Why was this done?
 
-While LiveSplit does work inside wine, the autosplit component does not work on linux machines. In addition to this, it is not possible to create breakpoints and read values in CPU registers with the autosplit component of LiveSplit. PyAutoSplit can do that. This is especially useful in a game like VVVVVV (2.2 and below), where all relevant information are on the stack, and therefore at nonstatic locations in memory. 
+While LiveSplit does work inside wine, the autosplit component does not work on linux machines. In addition to this, it is not possible to create breakpoints and read values in CPU registers with the autosplit component of LiveSplit. PyAutoSplit can do that. This is especially useful in a game like VVVVVV (2.2 and below), where all relevant information are on the stack, and therefore at nonstatic locations in memory.
 
 Current strategies involve scanning the processes memory for specific values, to guess the location of information like gamestate etc. Unfortunately this is rather error prone. With PyAutoSplit one can set a breakpoint at the (static) instruction where the game object is created, and read the cpu registers to get an exact location of the game object.
 
@@ -44,7 +44,7 @@ A game file is a json file with the following fields:
 
 #### Variables
 
-A variable in the `variables` field can be either a the state of the stack pointer at a specific instruction (`rsp`), the state of the base pointer at a specific instruction (`rbp`) or an integer value at an address in memory (`memory`). Addresses of variables can use the values of variables, that were defined prior, and the stack and base pointer can define an offset to be added to the value.
+A variable in the `variables` field can be either a the state of the stack pointer at a specific instruction (`rsp`), the state of the base pointer at a specific instruction (`rbp`), a static pointer in memory (`sptr`), a variable pointer in memory (`vptr`) or an integer value at an address in memory (`memory`). Addresses of variables can use the values of variables, that were defined prior, and the stack and base pointer can define an offset to be added to the value.
 
 ```
 "game_object": {
@@ -55,6 +55,24 @@ A variable in the `variables` field can be either a the state of the stack point
 ```
 
 This defines the variable `game_object` to be the value of the stack pointer at instruction `0x416da8` incremented by `0xe20`.
+
+``` json
+"static_pointer": {
+    "type": "sptr",
+    "address": "0x27DAC0"
+}
+```
+
+This defines the variable `static_pointer` to be the pointer found in memory at the offset `0x27DAC0`. Cheat Engine would display this static pointer as `[program + 0x27DAC0]`. [More info](https://wiki.cheatengine.org/index.php?title=Tutorials:Cheat_Engine_Tutorial_Guide_x64#Step_6:_Pointers).
+
+``` json
+"variable_pointer": {
+    "type": "vptr",
+    "address": "static_pointer + 0x3A"
+}
+```
+
+This defines the variable `variable_pointer` to be the pointer found in memory at the offset `0x3A`. Cheat Engine would display this variable pointer chain as `[[program + 0x27DAC0] + 0x3A]`. Each pointer in the chain has to have it's own variable entry to get correctly resolved. [More info](https://wiki.cheatengine.org/index.php?title=Tutorials:Cheat_Engine_Tutorial_Guide_x64#Step_8:_Multilevel_pointers).
 
 ```
 "frames": {

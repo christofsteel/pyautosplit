@@ -109,9 +109,19 @@ class Game:
         for name, var in self.data["variables"].items():
             if var["type"] == "rsp" or var["type"] == "rbp":
                 continue
+
             addr = get_address(name)
             try:
-                if "var_type" in var and var["var_type"] == "bool":
+                if var["type"] == "sptr" or var["type"] == "vptr":
+                    if var["type"] == "sptr":
+                        addr = self.process.base_address + addr
+                    ptr = self.process.read_pointer(addr)
+                    while ptr == 0:
+                        # make sure we're not saving null pointer
+                        ptr = self.process.read_pointer(addr)
+                    self.state[name] = ptr
+                    continue
+                elif "var_type" in var and var["var_type"] == "bool":
                     self.state[name] = self.process.read_bool(addr)
                 else:
                     self.state[name] = self.process.read_int(addr)

@@ -12,6 +12,7 @@ class GameProcess:
 
         self.debugger = ptrace.debugger.PtraceDebugger()
         self.dprocess = self.debugger.addProcess(self.process.pid, False)
+        self.base_address = int(self.dprocess.readMappings()[0].start)
         self.breakpoints = {}
 
     def insert_breakpoint(self, addr):
@@ -41,3 +42,6 @@ class GameProcess:
 
     def read_bool(self, addr):
         return self.dprocess.readBytes(addr, 1) == b'\01'
+
+    def read_pointer(self, addr):
+        return int.from_bytes(self.dprocess.readBytes(addr, 8), 'little')
