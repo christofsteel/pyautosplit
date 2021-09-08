@@ -195,6 +195,12 @@ class LiveSplitOne(CallbackHandler):
     def split(self, split):
         self._send_command("split")
 
+    def pause(self):
+        self._send_command("togglepause")
+
+    def resume(self):
+        self._send_command("togglepause")
+
     def _send_command(self, name):
         for ws in self.ws_list:
             if not ws.closed:
