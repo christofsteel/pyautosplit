@@ -19,11 +19,15 @@ pip install --user git+https://github.com/christofsteel/pyautosplit.git
 
 ## Usage
 
+### LiveSplit
 First you should start LiveSplit, and start the LiveSplit server component. After that you can launch PyAutoSplit with
 
 ```
 pyautosplit routefile.json
 ```
+
+### LiveSplit One
+Start PyAutoSplit with `--livesplitone` and it'll tell you the address LiveSplit One can connect to.
 
 ## Configuration
 
