@@ -144,9 +144,8 @@ class Game:
                     cbh.tick(self.state)
                 time.sleep(1 / int(self.data["frequency"]))
         except PtraceError as p:
-            if p.errno == 3:
-                pass
-            traceback.print_exc()
+            if p.errno != 3:
+                traceback.print_exc()
 
 @dataclass
 class Variable:

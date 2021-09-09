@@ -3,6 +3,7 @@ import sys
 from signal import SIGTRAP
 
 import ptrace.debugger
+from ptrace.debugger.process_error import ProcessError
 
 
 class GameProcess:
