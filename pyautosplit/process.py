@@ -38,13 +38,13 @@ class GameProcess:
         self.dprocess.cont()
 
     def read_mem(self, addr, length=4, signed=False, byteorder=sys.byteorder):
-        if addr == 0:
-            # We do not want to dereference the nullpointer
+        try:
+            return int.from_bytes(self.dprocess.readBytes(addr, length), byteorder=byteorder, signed=signed)
+        except ProcessError:
             return None
-        return int.from_bytes(self.dprocess.readBytes(addr, length), byteorder=byteorder, signed=signed)
 
     def read_bool(self, addr):
-        if addr == 0:
-            # We do not want to dereference the nullpointer
+        try:
+            return self.dprocess.readBytes(addr, 1) == b'\01'
+        except ProcessError:
             return None
-        return self.dprocess.readBytes(addr, 1) == b'\01'
