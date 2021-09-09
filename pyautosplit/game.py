@@ -2,7 +2,7 @@ import time
 import shlex
 from pathlib import Path
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, List
 from copy import deepcopy
 
 from simpleeval import simple_eval
@@ -21,7 +21,7 @@ class Split():
     name: str
     trigger: str
     time: int = None
-    subsplits: list[Any] = field(default_factory=list)
+    subsplits: List[Any] = field(default_factory=list)
 
 
 class Route:
