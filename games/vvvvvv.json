@@ -19,7 +19,8 @@
             "length": 4,
             "signed": false,
             "byteorder": "little",
-            "address": "game_object + 0xac"
+            "address": "game_object + 0xac",
+            "comment": "Blubb"
         },
         "minutes": {
             "type": "memory",

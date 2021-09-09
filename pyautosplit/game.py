@@ -156,4 +156,5 @@ class Variable:
     length: int = 4
     signed: bool = False
     byteorder : str = sys.byteorder
+    comment : str = ""
 
