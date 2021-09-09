@@ -116,10 +116,9 @@ class Game:
                     if var["type"] == "sptr":
                         addr = self.process.base_address + addr
                     ptr = self.process.read_int(addr, 8)
-                    while ptr == 0:
+                    if ptr != 0:
                         # make sure we're not saving null pointer
-                        ptr = self.process.read_int(addr, 8)
-                    self.state[name] = ptr
+                        self.state[name] = ptr
                     continue
                 elif "var_type" in var and var["var_type"] == "bool":
                     self.state[name] = self.process.read_bool(addr)
