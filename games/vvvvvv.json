@@ -16,6 +16,9 @@
         },
         "seconds": {
             "type": "memory",
+            "length": 4,
+            "signed": false,
+            "byteorder": "little",
             "address": "game_object + 0xac"
         },
         "minutes": {
@@ -43,13 +46,11 @@
             "address": "game_object - 0xc00"
         },
         "near_elephant": {
-            "type": "memory",
-            "var_type": "bool",
+            "type": "bool",
             "address": "game_object - 0xc00 + 0x126"
         },
         "sad": {
-            "type": "memory",
-            "var_type": "bool",
+            "type": "bool",
             "address": "game_object - 0xc00 + 0x127"
         }
     },

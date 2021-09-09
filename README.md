@@ -60,11 +60,31 @@ This defines the variable `game_object` to be the value of the stack pointer at 
 "frames": {
     "type": "memory",
     "address": "game_object + 0xa8",
-    "length": "4"
+    "length": 4,
+    "signed": false,
+    "byteorder": "little"
 }
 ```
 
-This defines the variable `frames` to be the value in memory at address `game_object + 0xa8`. The variable `game_object` must be defined prior. Optionally it can specify the byte length of the variable. The default length is 4 bytes.
+This defines the variable `frames` to be the value in memory at address `game_object + 0xa8`. The variable `game_object` must be defined prior. Optionally it can specify the `length` of the variable, the `signed`ness and the endianess (`byteorder`). The defaults are `4` and `false` for `length` and `signed`. For `byteorder` the native endianess of the system is used (`little` on `x86` machines).
+
+With the help of the memory access, one can define _multi-level_ variables, meaning variables, whos addresses depend on the value of other variables.
+
+```
+"some_pointer": {
+  "type": "memory",
+  "address": "0x123456",
+  "length": 8,
+}
+
+"some_variable": {
+  "type": "memory",
+  "address": "some_pointer + 0xc3",
+  "length": 4
+}
+```
+
+Since there is no distinction between variables, that are used as pointers, and variables whose value is directly used, one can chain this to arbitrary length. Note: You want to choose a length, that fits your pointer size. For `x86_64`, this is `8`.
 
 #### Events
 

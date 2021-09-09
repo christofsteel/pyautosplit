@@ -1,5 +1,6 @@
 import time
 import shlex
+import sys
 from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Any, List
@@ -99,27 +100,26 @@ class Game:
             pass
 
     def update_data(self):
-        def get_address(varname):
+        def eval_address(address_string):
             try:
-                return simple_eval(
-                    self.data["variables"][varname]["address"],
-                    names=self.state)
+                return simple_eval(address_string, names=self.state)
             except TypeError:
                 return None
 
         for name, var in self.data["variables"].items():
             if var["type"] == "rsp" or var["type"] == "rbp":
                 continue
-            addr = get_address(name)
+            var["_address"] = eval_address(var["address"])
+            var_obj = Variable(name=name, **var)
             try:
-                if "var_type" in var and var["var_type"] == "bool":
-                    self.state[name] = self.process.read_bool(addr)
-                else:
-                    if "length" in var:
-                        self.state[name] = self.process.read_int(
-                            addr, var["length"])
-                    else:
-                        self.state[name] = self.process.read_int(addr)
+                if var_obj.type == "bool":
+                    self.state[name] = self.process.read_bool(var_obj._address)
+                elif var_obj.type == "memory":
+                    self.state[name] = self.process.read_mem(
+                        addr=var_obj._address,
+                        length=int(var_obj.length),
+                        signed=var_obj.signed,
+                        byteorder=var_obj.byteorder)
             except TypeError:
                 pass
 
@@ -134,3 +134,14 @@ class Game:
                 time.sleep(1 / int(self.data["frequency"]))
         except PtraceError:
             pass
+
+@dataclass
+class Variable:
+    name: str
+    address: str
+    _address: int 
+    type: str = "memory"
+    length: int = 4
+    signed: bool = False
+    byteorder : str = sys.byteorder
+

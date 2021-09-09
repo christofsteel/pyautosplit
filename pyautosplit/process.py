@@ -1,4 +1,5 @@
 import subprocess
+import sys
 from signal import SIGTRAP
 
 import ptrace.debugger
@@ -36,8 +37,14 @@ class GameProcess:
     def cont(self):
         self.dprocess.cont()
 
-    def read_int(self, addr, length=4):
-        return int.from_bytes(self.dprocess.readBytes(addr, length), 'little')
+    def read_mem(self, addr, length=4, signed=False, byteorder=sys.byteorder):
+        if addr == 0:
+            # We do not want to dereference the nullpointer
+            return None
+        return int.from_bytes(self.dprocess.readBytes(addr, length), byteorder=byteorder, signed=signed)
 
     def read_bool(self, addr):
+        if addr == 0:
+            # We do not want to dereference the nullpointer
+            return None
         return self.dprocess.readBytes(addr, 1) == b'\01'
