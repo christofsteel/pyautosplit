@@ -8,6 +8,7 @@ from copy import deepcopy
 from simpleeval import simple_eval
 
 from .process import GameProcess
+from ptrace.error import PtraceError
 
 
 class State(dict):
@@ -131,5 +132,5 @@ class Game:
                 for cbh in self.callback_handlers:
                     cbh.tick(self.state)
                 time.sleep(1 / int(self.data["frequency"]))
-        except BaseException:
+        except PtraceError:
             pass
