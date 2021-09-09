@@ -45,6 +45,3 @@ class GameProcess:
 
     def read_bool(self, addr):
         return self.dprocess.readBytes(addr, 1) == b'\01'
-
-    def read_pointer(self, addr):
-        return int.from_bytes(self.dprocess.readBytes(addr, 8), 'little')
