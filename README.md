@@ -19,15 +19,33 @@ pip install --user git+https://github.com/christofsteel/pyautosplit.git
 
 ## Usage
 
+PyAutoSplit has three different _front-ends_: _console out_, _LiveSplit_ and _LiveSplit One_. You select one or multiple front-end with the `-f`/`--front-end` flag. If no front-end flag is given, _LiveSplit_ is automatically selected.
+
 ### LiveSplit
-First you should start LiveSplit, and start the LiveSplit server component. After that you can launch PyAutoSplit with
+
+If you want to connect PyAutoSplit to the server component of LiveSplit, you first have to start LiveSplit, and the LiveSplit server component. After that you can launch PyAutoSplit with
 
 ```
-pyautosplit routefile.json
+pyautosplit -f livesplit -- routefile.json
 ```
 
 ### LiveSplit One
-Start PyAutoSplit with `--livesplitone` and it'll tell you the address LiveSplit One can connect to.
+
+Run PyAutoSplit with
+
+```
+pyautosplit -f livesplitone -- routefile.json
+```
+
+After that, go to https://one.livesplit.org and connect to `ws://localhost:5000`.
+
+### Console out
+
+This is more of a debug output, but you can launch PyAutoSplit with
+
+```
+pyautosplit -f console -- routefile.json
+```
 
 ## Configuration
 

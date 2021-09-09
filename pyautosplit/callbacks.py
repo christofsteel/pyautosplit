@@ -163,14 +163,14 @@ class LiveSplitServer(CallbackHandler):
 
 
 class LiveSplitOne(CallbackHandler):
-    def __init__(self, port=5000):
+    def __init__(self, host="localhost", port=5000):
         super().__init__()
 
-        self.listener = eventlet.listen(('0.0.0.0', port))
+        self.listener = eventlet.listen((host, port))
         self.ws_list = set()
 
         self.thread = Thread(target=self._start_server, daemon=True)
-        print(f"Connect LiveSplitOne to ws://localhost:{port}")
+        print(f"Connect LiveSplitOne to ws://{host}:{port}")
         self.thread.start()
 
     def dispatch(self, environment, start_response):
@@ -208,4 +208,4 @@ class LiveSplitOne(CallbackHandler):
             ws.send(name)
 
     def _start_server(self):
-        wsgi.server(self.listener, self.dispatch)
+        wsgi.server(self.listener, self.dispatch, log_output=False)

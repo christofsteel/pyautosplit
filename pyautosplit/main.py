@@ -9,11 +9,21 @@ from .callbacks import ConsoleOut, LiveSplitServer, LiveSplitOne
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument("--no-livesplit", "-L", action="store_true")
-    parser.add_argument("--livesplitone", "-O", action="store_true")
-    parser.add_argument("--console-out", "-c", action="store_true")
-    parser.add_argument("--livesplit-port", "-p", type=int, default=16834)
-    parser.add_argument("--livesplit-host", "-H", default="localhost")
+    parser.add_argument("--front-ends", "-f", nargs="+", default=["livesplit"],
+                        help="Choose one or multiple of `console', "
+                        "`livesplit', `livesplitone' (default livesplit)")
+    parser.add_argument("--livesplit-host", default="localhost",
+                        help="Host that runs the livesplit server component "
+                        "(default localhost)")
+    parser.add_argument("--livesplit-port", type=int, default=16834,
+                        help="Port the livesplit server component listens on "
+                        "(default 16834)")
+    parser.add_argument("--livesplitone-bind", default="localhost",
+                        help="Bind the livesplitone websocket server to this "
+                        "host (default localhost)")
+    parser.add_argument("--livesplitone-port", type=int, default=5000,
+                        help="Bind the livesplitone websocket server to this "
+                        "port (default 5000)")
     parser.add_argument("runfile")
 
     args = parser.parse_args()
@@ -32,18 +42,14 @@ def main():
 
     callback_handlers = []
 
-    if not args.no_livesplit:
-        if args.livesplitone:
-            callback_handlers.append(
-                LiveSplitOne(args.livesplit_port))
-        else:
-            callback_handlers.append(
-                LiveSplitServer(
-                    args.livesplit_host,
-                    args.livesplit_port))
-
-    if args.console_out:
+    if 'console' in args.front_ends:
         callback_handlers.append(ConsoleOut())
+    if 'livesplitone' in args.front_ends:
+        callback_handlers.append(
+            LiveSplitOne(args.livesplitone_bind, args.livesplitone_port))
+    if 'livesplit' in args.front_ends:
+        callback_handlers.append(
+            LiveSplitServer(args.livesplit_host, args.livesplit_port))
 
     game = Game(gamedata, rundata, callback_handlers)
     game.hook()
