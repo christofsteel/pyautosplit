@@ -40,7 +40,8 @@ class GameProcess:
 
     def read_mem(self, addr, length=4, signed=False, byteorder=sys.byteorder):
         try:
-            return int.from_bytes(self.dprocess.readBytes(addr, length), byteorder=byteorder, signed=signed)
+            return int.from_bytes(self.dprocess.readBytes(addr, length),
+                                  byteorder=byteorder, signed=signed)
         except ProcessError:
             return None
 

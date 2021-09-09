@@ -130,7 +130,6 @@ class Game:
         self.state["stack_start"] = self.process.dprocess.findStack().start
         self.state["stack_end"] = self.process.dprocess.findStack().end
 
-
     def hook(self):
         self.process.cont()
 
@@ -147,14 +146,14 @@ class Game:
             if p.errno != 3:
                 traceback.print_exc()
 
+
 @dataclass
 class Variable:
     name: str
     address: str
-    _address: int 
+    _address: int
     type: str = "memory"
     length: int = 4
     signed: bool = False
-    byteorder : str = sys.byteorder
-    comment : str = ""
-
+    byteorder: str = sys.byteorder
+    comment: str = ""

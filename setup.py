@@ -8,7 +8,7 @@ setuptools.setup(
     description="A python autosplit module for linux and the livesplit server module",
     url="https://github.com/christofsteel/pyautosplit.git",
     packages=setuptools.find_packages(),
-    install_requires=["flask-sockets", "python-ptrace", "simpleeval"],
+    install_requires=["eventlet", "python-ptrace", "simpleeval"],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Programming Language :: Python :: 3",

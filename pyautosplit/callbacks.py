@@ -2,19 +2,23 @@ import datetime
 import time
 import socket
 from copy import deepcopy
-from flask import Flask
-from flask_sockets import Sockets
-from gevent import monkey
-from gevent import pywsgi
-from geventwebsocket.handler import WebSocketHandler
 from threading import Thread
 
 from simpleeval import simple_eval
 
+import eventlet
+from eventlet import wsgi
+from eventlet import websocket
+
 
 class CallbackHandler():
     """
-    This is the base class for all callback handlers. The `tick` method of a callback will be called at specific invervalls and be given the current state of the observed memory locations. This method then checks, if any event - like starting a run, reaching a split, etc. - is triggerd and calls the appropriate method. These methods need to be implemented in a subclass of `CallbackHandler`.
+    This is the base class for all callback handlers. The `tick` method of a
+    callback will be called at specific invervalls and be given the current
+    state of the observed memory locations. This method then checks, if any
+    event - like starting a run, reaching a split, etc. - is triggerd and
+    calls the appropriate method. These methods need to be implemented in a
+    subclass of `CallbackHandler`.
     """
 
     def __init__(self):
@@ -117,7 +121,8 @@ class ConsoleOut(CallbackHandler):
 
     def update_time(self):
         print(
-            f"\r{datetime.timedelta(seconds=self.time_in_seconds())} - {self.nextsplit_as_string()}, {self.state}",
+            f"\r{datetime.timedelta(seconds=self.time_in_seconds())} - "
+            f"{self.nextsplit_as_string()}, {self.state}",
             end='')
 
     def split(self, split):
@@ -161,26 +166,24 @@ class LiveSplitOne(CallbackHandler):
     def __init__(self, port=5000):
         super().__init__()
 
-        monkey.patch_all()
-
-        self.app = Flask(__name__)
-        self.app.config['SECRET_KEY'] = 'secret!'
-        self.sockets = Sockets(self.app)
-        self.ws_list = []
-
-        @self.sockets.route('/')
-        def echo_socket(ws):
-            self.ws_list.append(ws)
-            while not ws.closed:
-                message = ws.receive()
-                ws.send(message)
-
-        self.server = pywsgi.WSGIServer(
-            ('', port), self.app, handler_class=WebSocketHandler)
+        self.listener = eventlet.listen(('0.0.0.0', port))
+        self.ws_list = set()
 
         self.thread = Thread(target=self._start_server, daemon=True)
         print(f"Connect LiveSplitOne to ws://localhost:{port}")
         self.thread.start()
+
+    def dispatch(self, environment, start_response):
+        @websocket.WebSocketWSGI
+        def handle(ws):
+            self.ws_list.add(ws)
+            try:
+                while True:
+                    ws.wait()
+            finally:
+                self.ws_list.remove(ws)
+
+        return handle(environment, start_response)
 
     def init(self, *args, **kwargs):
         super().init(*args, **kwargs)
@@ -202,10 +205,7 @@ class LiveSplitOne(CallbackHandler):
 
     def _send_command(self, name):
         for ws in self.ws_list:
-            if not ws.closed:
-                ws.send(name)
-            else:
-                self.ws_list.remove(ws)
+            ws.send(name)
 
     def _start_server(self):
-        self.server.start()
+        wsgi.server(self.listener, self.dispatch)
