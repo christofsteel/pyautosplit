@@ -1,6 +1,7 @@
 import time
 import shlex
 import sys
+import traceback
 from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Any, List
@@ -123,8 +124,18 @@ class Game:
             except TypeError:
                 pass
 
+    def fill_mappings(self):
+        mappings = self.process.dprocess.readMappings()
+        self.state["process_start"] = mappings[0].start
+        self.state["stack_start"] = self.process.dprocess.findStack().start
+        self.state["stack_end"] = self.process.dprocess.findStack().end
+
+
     def hook(self):
         self.process.cont()
+
+        self.fill_mappings()
+
         try:
             while True:
                 self.handle_breakpoints()
@@ -132,8 +143,10 @@ class Game:
                 for cbh in self.callback_handlers:
                     cbh.tick(self.state)
                 time.sleep(1 / int(self.data["frequency"]))
-        except PtraceError:
-            pass
+        except PtraceError as p:
+            if p.errno == 3:
+                pass
+            traceback.print_exc()
 
 @dataclass
 class Variable:
