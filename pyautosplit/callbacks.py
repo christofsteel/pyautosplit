@@ -2,6 +2,12 @@ import datetime
 import time
 import socket
 from copy import deepcopy
+from flask import Flask
+from flask_sockets import Sockets
+from gevent import monkey
+from gevent import pywsgi
+from geventwebsocket.handler import WebSocketHandler
+from threading import Thread
 
 from simpleeval import simple_eval
 
@@ -154,14 +160,7 @@ class LiveSplitServer(CallbackHandler):
 class LiveSplitOne(CallbackHandler):
     def __init__(self, port=5000):
         super().__init__()
-        self.port = port
 
-        from threading import Thread
-        from flask import Flask
-        from flask_sockets import Sockets
-        from gevent import pywsgi
-        from geventwebsocket.handler import WebSocketHandler
-        from gevent import monkey
         monkey.patch_all()
 
         self.app = Flask(__name__)
@@ -180,6 +179,7 @@ class LiveSplitOne(CallbackHandler):
             ('', port), self.app, handler_class=WebSocketHandler)
 
         self.thread = Thread(target=self._start_server, daemon=True)
+        print(f"Connect LiveSplitOne to ws://localhost:{port}")
         self.thread.start()
 
     def init(self, *args, **kwargs):
@@ -189,7 +189,6 @@ class LiveSplitOne(CallbackHandler):
         self._send_command("reset")
 
     def start(self):
-        super().start()
         self._send_command("start")
 
     def split(self, split):
@@ -209,5 +208,4 @@ class LiveSplitOne(CallbackHandler):
                 self.ws_list.remove(ws)
 
     def _start_server(self):
-        print(f"Connect LiveSplitOne to ws://localhost:{self.port}")
         self.server.start()
