@@ -59,6 +59,7 @@ A game file is a json file with the following fields:
   * `command`, the launch command to run the game
   * `cwd`, the working directory of the command (optional)
   * `env`, additional environment variables for the command (optional)
+  * `exe`, executable to track (optional, requires wrapper binary, see [wrapper](https://github.com/christofsteel/pyautosplit/tree/main/wrapper#wrapper))
   * `frequency`, how many times a second should the memory be read
   * `time`, how does one calculate the ingame time in seconds (optional). If not present, realtime will be used.
   * `variables`, variables, that can be used to define other components (see below)

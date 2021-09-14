@@ -1,3 +1,4 @@
+import os
 import time
 import shlex
 import sys
@@ -46,7 +47,8 @@ class Route:
 
 
 class Game:
-    def __init__(self, gamedata, rundata, callback_handlers):
+    def __init__(self, gamedata, rundata, callback_handlers,
+                 from_wrapper=False):
         self.data = gamedata
 
         if 'overwrites' in rundata:
@@ -69,9 +71,13 @@ class Game:
         if "env" in self.data:
             env = env | self.data["env"]
 
+        exe = None
+        if from_wrapper is True and "exe" in self.data:
+            exe = self.data["exe"]
+
         command = shlex.split(self.data["command"])
         command[0] = Path(command[0]).expanduser()
-        self.process = GameProcess(command, cwd, env=env)
+        self.process = GameProcess(command, cwd, env=env, exe=exe)
 
         self.breakpoints = {}
 

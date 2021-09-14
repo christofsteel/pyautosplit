@@ -1,0 +1,1 @@
+option('pyautosplit', type: 'string', value: '/usr/local/bin/pyautosplit', description: 'Path to PyAutoSplit')

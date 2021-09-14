@@ -1,6 +1,7 @@
 import json
 import os.path
 from argparse import ArgumentParser
+from argparse import SUPPRESS
 from collections import OrderedDict
 
 from .game import Game
@@ -24,6 +25,8 @@ def main():
     parser.add_argument("--livesplitone-port", type=int, default=5000,
                         help="Bind the livesplitone websocket server to this "
                         "port (default 5000)")
+    parser.add_argument("--from-wrapper", action='store_true', default=False,
+                        help=SUPPRESS)
     parser.add_argument("runfile")
 
     args = parser.parse_args()
@@ -51,7 +54,7 @@ def main():
         callback_handlers.append(
             LiveSplitServer(args.livesplit_host, args.livesplit_port))
 
-    game = Game(gamedata, rundata, callback_handlers)
+    game = Game(gamedata, rundata, callback_handlers, args.from_wrapper)
     game.hook()
 
 

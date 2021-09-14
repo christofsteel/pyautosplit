@@ -8,21 +8,40 @@ from ptrace.debugger.process_error import ProcessError
 
 
 class GameProcess:
-    def __init__(self, command, cwd, env=os.environ.copy()):
+    def __init__(self, command, cwd, env=os.environ.copy(), exe=None):
         self.process = subprocess.Popen(command,
                                         stdout=subprocess.DEVNULL,
                                         cwd=cwd,
                                         env=env)
 
         self.debugger = ptrace.debugger.PtraceDebugger()
-        self.dprocess = self.debugger.addProcess(self.process.pid, False)
+
+        if exe is None:
+            self.dprocess = self.debugger.addProcess(self.process.pid, False)
+        else:
+            # If an executable is set we're listening for that specific pid
+            # instead of our own child. This is useful for programs that
+            # spawn own subchilds we can't track normally. This needs
+            # elevated user rights which will be provided by a wrapper binary.
+            pids = 0
+            while pids == 0:
+                # Wine is heavy, wait for our process to show up
+                try:
+                    pids = subprocess.check_output(
+                        ["pgrep", "--count", "--exact", exe], text=True)
+                except subprocess.CalledProcessError:
+                    # pgrep throws 1 if count is 0
+                    pass
+            pids = subprocess.check_output(
+                ["pgrep", "--exact", exe], text=True).split()
+            self.dprocess = self.debugger.addProcess(int(pids[0]), False)
         self.breakpoints = {}
 
     def insert_breakpoint(self, addr):
         self.breakpoints[addr] = self.dprocess.createBreakpoint(addr)
 
     def check_breakpoint_hit(self):
-        event = self.debugger._wait_event_pid(self.process.pid, False)
+        event = self.debugger._wait_event_pid(self.dprocess.pid, False)
         return event is not None and event.signum == SIGTRAP
 
     def delete_breakpoint(self, addr):
