@@ -65,9 +65,13 @@ class Game:
         else:
             cwd = None
 
+        env = os.environ.copy()
+        if "env" in self.data:
+            env = env | self.data["env"]
+
         command = shlex.split(self.data["command"])
         command[0] = Path(command[0]).expanduser()
-        self.process = GameProcess(command, cwd)
+        self.process = GameProcess(command, cwd, env=env)
 
         self.breakpoints = {}
 

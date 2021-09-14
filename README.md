@@ -19,7 +19,7 @@ pip install --user git+https://github.com/christofsteel/pyautosplit.git
 
 ## Usage
 
-PyAutoSplit has three different _front-ends_: _console out_, _LiveSplit_ and _LiveSplit One_. You select one or multiple front-end with the `-f`/`--front-end` flag. If no front-end flag is given, _LiveSplit_ is automatically selected.
+PyAutoSplit has three different _front-ends_: _console out_, _LiveSplit_ and _LiveSplit One_. You select one or multiple front-end with the `-f`/`--front-ends` flag. If no front-end flag is given, _LiveSplit_ is automatically selected.
 
 ### LiveSplit
 
@@ -58,6 +58,7 @@ A game file is a json file with the following fields:
   * `name`, the name of the game
   * `command`, the launch command to run the game
   * `cwd`, the working directory of the command (optional)
+  * `env`, additional environment variables for the command (optional)
   * `frequency`, how many times a second should the memory be read
   * `time`, how does one calculate the ingame time in seconds (optional). If not present, realtime will be used.
   * `variables`, variables, that can be used to define other components (see below)
