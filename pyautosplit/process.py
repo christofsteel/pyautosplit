@@ -1,16 +1,18 @@
 import subprocess
 import sys
 from signal import SIGTRAP
+from typing import Dict, Optional
 
 import ptrace.debugger
 from ptrace.debugger.process_error import ProcessError
 
 
 class GameProcess:
-    def __init__(self, command, cwd):
+    def __init__(self, command, cwd, env: Optional[Dict[str, str]] = None):
         self.process = subprocess.Popen(command,
                                         stdout=subprocess.DEVNULL,
-                                        cwd=cwd)
+                                        cwd=cwd,
+                                        env=env)
 
         self.debugger = ptrace.debugger.PtraceDebugger()
         self.dprocess = self.debugger.addProcess(self.process.pid, False)

@@ -1,10 +1,11 @@
+import os
 import time
 import shlex
 import sys
 import traceback
 from pathlib import Path
 from dataclasses import dataclass, field
-from typing import Any, List
+from typing import Any, Dict, List, Optional 
 from copy import deepcopy
 
 from simpleeval import simple_eval
@@ -65,9 +66,16 @@ class Game:
         else:
             cwd = None
 
+        env: Optional[Dict[str, str]] = self.data.get("env", None)
+        if env is not None:
+            for var in env:
+                env[var] = os.path.expandvars(env[var])
+
+            env.update(os.environ)
+
         command = shlex.split(self.data["command"])
         command[0] = Path(command[0]).expanduser()
-        self.process = GameProcess(command, cwd)
+        self.process = GameProcess(command, cwd, env=env)
 
         self.breakpoints = {}
 
