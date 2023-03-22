@@ -192,6 +192,8 @@ class LiveSplitOne(CallbackHandler):
         self._send_command("reset")
 
     def start(self):
+        # LiveSplitOne can fail to start to timer if the timer had already been started. (ex. after a pause)
+        self.reset()
         self._send_command("start")
 
     def split(self, split):
